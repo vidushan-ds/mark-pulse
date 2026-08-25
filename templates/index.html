@@ -25,18 +25,38 @@
         </p>
 
         <p>
+        <label for="sinhala">Sinhala: </label>
+        <input type="number" name="sinhala" placeholder="0" min="0" max="100"><br>
+        </p>
+
+        <p>
         <label for="english">English: </label>
         <input type="number" name="english" placeholder="0" min="0" max="100"><br>
         </p>
 
         <p>
-        <label for="ict">ICT: </label>
-        <input type="number" name="ict" placeholder="0" min="0" max="100"><br>
+        <label for="history">History: </label>
+        <input type="number" name="history" placeholder="0" min="0" max="100"><br>
         </p>
 
         <p>
-        <label for="sinhala">Sinhala: </label>
-        <input type="number" name="sinhala" placeholder="0" min="0" max="100"><br>
+        <label for="religion">Religion: </label>
+        <input type="number" name="religion" placeholder="0" min="0" max="100"><br>
+        </p>
+
+        <p>
+        <label for="category_1">Category 1: </label>
+        <input type="number" name="category_1" placeholder="0" min="0" max="100"><br>
+        </p>
+
+        <p>
+        <label for="category_2">Category 2: </label>
+        <input type="number" name="category_2" placeholder="0" min="0" max="100"><br>
+        </p>
+
+        <p>
+        <label for="category_3">Category 3: </label>
+        <input type="number" name="category_3" placeholder="0" min="0" max="100"><br>
         </p>
 
         <button type="submit">Submit</button>
@@ -49,9 +69,13 @@
         <hr>
         <p><strong>Science: </strong> {{ result['science'] }}</p>
         <p><strong>Mathematics: </strong> {{ result['mathematics'] }}</p>
-        <p><strong>English: </strong> {{ result['english'] }}</p>
-        <p><strong>ICT: </strong> {{ result['ict'] }}</p>
         <p><strong>Sinhala: </strong> {{ result['sinhala'] }}</p>
+        <p><strong>English: </strong> {{ result['english'] }}</p>
+        <p><strong>History: </strong> {{ result['history'] }}</p>
+        <p><strong>Religion: </strong> {{ result['religion'] }}</p>
+        <p><strong>Category-1: </strong> {{ result['category_1'] }}</p>
+        <p><strong>Category-2: </strong> {{ result['category_2'] }}</p>
+        <p><strong>Category-3: </strong> {{ result['category_3'] }}</p>
     </div>
     {% endif %}
 

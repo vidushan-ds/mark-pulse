@@ -10,17 +10,25 @@ def home():
         exam_name = request.form.get('exam_name', '')
         science = request.form.get('science', type=float)
         mathematics = request.form.get('math', type=float)
-        english = request.form.get('english', type=float)
-        ict = request.form.get('ict', type=float)
         sinhala = request.form.get('sinhala', type=float)
+        english = request.form.get('english', type=float)
+        history = request.form.get('history', type=float)
+        religion = request.form.get('religion', type=float)
+        category_1 = request.form.get('category_1', type=float)
+        category_2 = request.form.get('category_2', type=float)
+        category_3 = request.form.get('category_3', type=float)
         
         result = {
             "exam_name" : exam_name,
             "science" : science,
             "mathematics" : mathematics,
+            "sinhala" : sinhala,
             "english" : english,
-            "ict" : ict,
-            "sinhala" : sinhala
+            "history" : history,
+            "religion" : religion,
+            "category_1" : category_1,
+            "category_2" : category_2,
+            "category_3" : category_3
         }
     
     return render_template("index.html", result=result)
