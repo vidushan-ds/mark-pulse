@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
     <title>Home</title>
 </head>
 <body>
@@ -11,52 +12,52 @@
         
         <p>
         <label for="exam_name">Name of Exam:</label>
-        <input type="text" name="exam_name"><br>
+        <input type="text"id='exam_name' name="exam_name"><br>
         </p>
 
         <p>
         <label for="science">Science: </label>
-        <input type="number" name="science" placeholder="0" min="0" max="100"><br>
+        <input type="number" id="science" name="science" placeholder="0" min="0" max="100"><br>
         </p> 
 
         <p>
         <label for="math">Mathematics: </label>
-        <input type="number" name="math" placeholder="0" min="0" max="100"><br>
+        <input type="number" id="math" name="math" placeholder="0" min="0" max="100"><br>
         </p>
 
         <p>
         <label for="sinhala">Sinhala: </label>
-        <input type="number" name="sinhala" placeholder="0" min="0" max="100"><br>
+        <input type="number" id="sinhala" name="sinhala" placeholder="0" min="0" max="100"><br>
         </p>
 
         <p>
         <label for="english">English: </label>
-        <input type="number" name="english" placeholder="0" min="0" max="100"><br>
+        <input type="number" id="english" name="english" placeholder="0" min="0" max="100"><br>
         </p>
 
         <p>
         <label for="history">History: </label>
-        <input type="number" name="history" placeholder="0" min="0" max="100"><br>
+        <input type="number" id="history" name="history" placeholder="0" min="0" max="100"><br>
         </p>
 
         <p>
         <label for="religion">Religion: </label>
-        <input type="number" name="religion" placeholder="0" min="0" max="100"><br>
+        <input type="number" id="religion" name="religion" placeholder="0" min="0" max="100"><br>
         </p>
 
         <p>
         <label for="category_1">Category 1: </label>
-        <input type="number" name="category_1" placeholder="0" min="0" max="100"><br>
+        <input type="number" id="category_1" name="category_1" placeholder="0" min="0" max="100"><br>
         </p>
 
         <p>
         <label for="category_2">Category 2: </label>
-        <input type="number" name="category_2" placeholder="0" min="0" max="100"><br>
+        <input type="number" id="category_2" name="category_2" placeholder="0" min="0" max="100"><br>
         </p>
 
         <p>
         <label for="category_3">Category 3: </label>
-        <input type="number" name="category_3" placeholder="0" min="0" max="100"><br>
+        <input type="number" id="category_3" name="category_3" placeholder="0" min="0" max="100"><br>
         </p>
 
         <button type="submit">Submit</button>
@@ -77,7 +78,17 @@
         <p><strong>Category-2: </strong> {{ result['category_2'] }}</p>
         <p><strong>Category-3: </strong> {{ result['category_3'] }}</p>
     </div>
+
+    <div>
+        <p>A: {{ result['grades'][0] }}</p>
+        <p>B: {{ result['grades'][1] }}</p>
+        <p>C: {{ result['grades'][2] }}</p>
+        <p>S: {{ result['grades'][3] }}</p>
+        <p>W: {{ result['grades'][4] }}</p>
+    </div>
     {% endif %}
+
+
 
 
 </body>
