@@ -77,19 +77,15 @@
         <p><strong>Category-1: </strong> {{ result['category_1'] }}</p>
         <p><strong>Category-2: </strong> {{ result['category_2'] }}</p>
         <p><strong>Category-3: </strong> {{ result['category_3'] }}</p>
-    </div>
 
-    <div>
-        <p>A: {{ result['grades'][0] }}</p>
-        <p>B: {{ result['grades'][1] }}</p>
-        <p>C: {{ result['grades'][2] }}</p>
-        <p>S: {{ result['grades'][3] }}</p>
-        <p>W: {{ result['grades'][4] }}</p>
+    <div class="grade-summary">
+        <div class="grade grade-a"><span>{{ result['grades'][0] }}</span>A</div>
+        <div class="grade grade-b"><span>{{ result['grades'][1] }}</span>B</div>
+        <div class="grade grade-c"><span>{{ result['grades'][2] }}</span>C</div>
+        <div class="grade grade-s"><span>{{ result['grades'][3] }}</span>S</div>
+        <div class="grade grade-w"><span>{{ result['grades'][4] }}</span>W</div>
+    </div>
     </div>
     {% endif %}
-
-
-
-
 </body>
 </html>
