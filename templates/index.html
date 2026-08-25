@@ -6,21 +6,55 @@
     <title>Home</title>
 </head>
 <body>
+    <div class="form">
     <form action="/" method="POST">
-        <label for="name">Name:</label>
-        <input type="text" name="name"><br>
+        
+        <p>
+        <label for="exam_name">Name of Exam:</label>
+        <input type="text" name="exam_name"><br>
+        </p>
 
-        <label for="marks">Marks:</label>
-        <input type="text" name="mark"><br> 
+        <p>
+        <label for="science">Science: </label>
+        <input type="number" name="science" placeholder="0" min="0" max="100"><br>
+        </p> 
+
+        <p>
+        <label for="math">Mathematics: </label>
+        <input type="number" name="math" placeholder="0" min="0" max="100"><br>
+        </p>
+
+        <p>
+        <label for="english">English: </label>
+        <input type="number" name="english" placeholder="0" min="0" max="100"><br>
+        </p>
+
+        <p>
+        <label for="ict">ICT: </label>
+        <input type="number" name="ict" placeholder="0" min="0" max="100"><br>
+        </p>
+
+        <p>
+        <label for="sinhala">Sinhala: </label>
+        <input type="number" name="sinhala" placeholder="0" min="0" max="100"><br>
+        </p>
 
         <button type="submit">Submit</button>
     </form>
+    </div>
 
     {% if result %}
-    <div>
-        {{ result.name }}
-        {{ result.mark }}
+    <div class="show-marks">
+        <h4> Results for {{ result.exam_name }}</h4>
+        <hr>
+        <p><strong>Science: </strong> {{ result['science'] }}</p>
+        <p><strong>Mathematics: </strong> {{ result['mathematics'] }}</p>
+        <p><strong>English: </strong> {{ result['english'] }}</p>
+        <p><strong>ICT: </strong> {{ result['ict'] }}</p>
+        <p><strong>Sinhala: </strong> {{ result['sinhala'] }}</p>
     </div>
     {% endif %}
+
+
 </body>
 </html>

@@ -7,12 +7,20 @@ def home():
     result = None
     
     if request.method == 'POST':
-        name = request.form.get('name', '')
-        mark = request.form.get('mark', type=float)
+        exam_name = request.form.get('exam_name', '')
+        science = request.form.get('science', type=float)
+        mathematics = request.form.get('math', type=float)
+        english = request.form.get('english', type=float)
+        ict = request.form.get('ict', type=float)
+        sinhala = request.form.get('sinhala', type=float)
         
         result = {
-            "name" : name,
-            "mark" : mark
+            "exam_name" : exam_name,
+            "science" : science,
+            "mathematics" : mathematics,
+            "english" : english,
+            "ict" : ict,
+            "sinhala" : sinhala
         }
     
     return render_template("index.html", result=result)
