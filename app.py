@@ -11,7 +11,7 @@ class LoginForm(FlaskForm):
 
 app = Flask(__name__)
 
-app.config["SECRET_KEY"] = "vidushan"
+app.config["SECRET_KEY"] = "vidushan-ds"
 
 def grade_calculator(marks: list):
     
