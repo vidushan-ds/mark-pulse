@@ -1,6 +1,17 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField, PasswordField
+from wtforms.validators import DataRequired, Email
+
+class LoginForm(FlaskForm):
+    name = StringField("Name", validators=[DataRequired()])
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    password = PasswordField("Password", validators=[DataRequired()])
+    submit = SubmitField("Login")
 
 app = Flask(__name__)
+
+app.config["SECRET_KEY"] = "vidushan"
 
 def grade_calculator(marks: list):
     
@@ -24,7 +35,16 @@ def grade_calculator(marks: list):
     
     return [A_count, B_count, C_count, S_count, W_count]
 
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    
+    if form.validate_on_submit():
+        return redirect(url_for("home"))
+    
+    return render_template("login.html", form=form)
+
+@app.route("/home", methods=['GET', 'POST'])
 def home():
     result = None
     
