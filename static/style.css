@@ -9,6 +9,7 @@ body {
     background-color: #f4f6f8;
     color: #2d2d2d;
     padding: 40px 20px;
+    position: relative;
 }
 
 body {
@@ -17,6 +18,16 @@ body {
     align-items: flex-start;
     gap: 24px;
     flex-wrap: wrap;
+}
+
+h1 {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0;
 }
 
 .form, .show-marks {
@@ -133,9 +144,9 @@ body {
 }
 
 .form p:first-of-type {
-    grid-column: 1 / -1;   /* Name of Exam spans full width */
+    grid-column: 1 / -1;   
 }
 
 .form button {
-    grid-column: 1 / -1;   /* Submit button spans full width */
+    grid-column: 1 / -1; 
 }

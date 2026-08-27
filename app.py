@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Email
@@ -40,6 +40,7 @@ def login():
     form = LoginForm()
     
     if form.validate_on_submit():
+        session["name"] = form.name.data
         return redirect(url_for("home"))
     
     return render_template("login.html", form=form)
@@ -47,6 +48,8 @@ def login():
 @app.route("/home", methods=['GET', 'POST'])
 def home():
     result = None
+    
+    name = session.get("name")
     
     if request.method == 'POST':
         exam_name = request.form.get('exam_name', '')
@@ -77,7 +80,7 @@ def home():
             "grades" : grades
         }
     
-    return render_template("index.html", result=result)
+    return render_template("index.html", result=result, name=name)
 
 if __name__ == "__main__":
     app.run(debug=True)
