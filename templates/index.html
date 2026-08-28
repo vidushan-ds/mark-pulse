@@ -14,7 +14,7 @@
         
         <p>
         <label for="exam_name">Name of Exam:</label>
-        <input type="text"id='exam_name' name="exam_name"><br>
+        <input type="text" id='exam_name' name="exam_name"><br>
         </p>
 
         <p>
@@ -88,6 +88,18 @@
         <div class="grade grade-w"><span>{{ result['grades'][4] }}</span>W</div>
     </div>
     </div>
+
+    <canvas id="marksChart"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script>
+            const result = {{ result | tojson }};
+        </script>
+
+    <script src="{{ url_for('static', filename='js/chart.js')}}"></script>
+
     {% endif %}
+
 </body>
 </html>
