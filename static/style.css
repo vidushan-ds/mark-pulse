@@ -150,3 +150,29 @@ h1 {
 .form button {
     grid-column: 1 / -1; 
 }
+
+.charts-section {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 24px;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 1200px;
+    margin: 24px auto 0;
+}
+
+.chart-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    flex: 1 1 480px;
+    height: 480px;
+    position: relative;
+}
+
+.chart-card canvas {
+    width: 100% !important;
+    height: 100% !important;
+}

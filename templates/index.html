@@ -80,26 +80,35 @@
         <p><strong>Category-2: </strong> {{ result['category_2'] }}</p>
         <p><strong>Category-3: </strong> {{ result['category_3'] }}</p>
 
-    <div class="grade-summary">
-        <div class="grade grade-a"><span>{{ result['grades'][0] }}</span>A</div>
-        <div class="grade grade-b"><span>{{ result['grades'][1] }}</span>B</div>
-        <div class="grade grade-c"><span>{{ result['grades'][2] }}</span>C</div>
-        <div class="grade grade-s"><span>{{ result['grades'][3] }}</span>S</div>
-        <div class="grade grade-w"><span>{{ result['grades'][4] }}</span>W</div>
-    </div>
+        <div class="grade-summary">
+            <div class="grade grade-a"><span>{{ result['grades'][0] }}</span>A</div>
+            <div class="grade grade-b"><span>{{ result['grades'][1] }}</span>B</div>
+            <div class="grade grade-c"><span>{{ result['grades'][2] }}</span>C</div>
+            <div class="grade grade-s"><span>{{ result['grades'][3] }}</span>S</div>
+            <div class="grade grade-w"><span>{{ result['grades'][4] }}</span>W</div>
+        </div>
     </div>
 
-    <canvas id="marksChart"></canvas>
+    {% endif %}
+
+    {% if chart_data.line_labels %}
+    <div class="charts-section">
+        <div class="chart-card">
+            <canvas id="lineChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <canvas id="radarChart"></canvas>
+        </div>
+    </div>
+    {% endif %}
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        <script>
-            const result = {{ result | tojson }};
-        </script>
-
+    <script>
+        const result = {{ result | tojson }};
+        const chartData = {{ chart_data | tojson }};
+    </script>
     <script src="{{ url_for('static', filename='js/chart.js')}}"></script>
-
-    {% endif %}
 
 </body>
 </html>

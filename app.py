@@ -3,6 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 from models import db, Student, Exam, Marks, Prediction
+from sqlalchemy import func
 
 class SignupForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
@@ -94,8 +95,20 @@ def home():
     student_id = session.get("student_id")
     name = session.get("name")
     
+    subject_names = ["science", 
+                    "mathematics",
+                    "sinhala",
+                    "english",
+                    "history", 
+                    "religion", 
+                    "category_1", 
+                    "category_2", 
+                    "category_3"]
+    
     if request.method == 'POST':
+        
         exam_name = request.form.get('exam_name', '')
+        
         science = request.form.get('science', type=float)
         mathematics = request.form.get('math', type=float)
         sinhala = request.form.get('sinhala', type=float)
@@ -106,26 +119,29 @@ def home():
         category_2 = request.form.get('category_2', type=float)
         category_3 = request.form.get('category_3', type=float)
         
-        marks = [science, mathematics, sinhala, english, history, religion, category_1, category_2, category_3]
+        marks = [science,
+                mathematics,
+                sinhala,
+                english, 
+                history, 
+                religion, 
+                category_1, 
+                category_2, 
+                category_3]
+        
         grades = grade_calculator(marks)
         
-        exam = Exam(student_id=student_id, exam_name=exam_name)
+        exam = Exam(student_id=student_id, 
+                    exam_name=exam_name)
+        
         db.session.add(exam)
         db.session.commit()
         
-        subject_names = ["science", 
-                        "mathematics",
-                        "sinhala",
-                        "english",
-                        "history", 
-                        "religion", 
-                        "category_1", 
-                        "category_2", 
-                        "category_3"]
-        
         for subject, score in zip(subject_names, marks):
             if score is not None:
-                db.session.add(Marks(exam_id=exam.id, subject=subject, score=score))
+                db.session.add(Marks(exam_id=exam.id, 
+                                     subject=subject, 
+                                     score=score))
                 
         db.session.commit()
         
@@ -142,8 +158,46 @@ def home():
             "category_3" : category_3,
             "grades" : grades
         }
+        
+    recent_exams = (
+        Exam.query
+        .filter_by(student_id=student_id)
+        .order_by(Exam.id.desc())
+        .limit(5)
+        .all()
+    )
     
-    return render_template("index.html", result=result, name=name)
+    recent_exams.reverse()
+    
+    line_labels = [exam.exam_name for exam in recent_exams]
+    line_data = {subject: [] for subject in subject_names}
+    
+    for exam in recent_exams:
+        marks_by_subject = {m.subject: m.score for m in exam.marks}
+        for subject in subject_names:
+            line_data[subject].append(marks_by_subject.get(subject))
+            
+    radar_data = []
+    
+    for subject in subject_names:
+        avg_score = (
+            db.session.query(func.avg(Marks.score))
+            .join(Exam)
+            .filter(Exam.student_id == student_id,
+                       Marks.subject == subject
+                       )
+            .scalar()
+        )
+        radar_data.append(round(avg_score, 1) if avg_score is not None else 0)
+        
+    chart_data = {
+        "line_labels" : line_labels,
+        "line_data" : line_data,
+        "radar_labels" : subject_names,
+        "radar_data" : radar_data
+    }
+    
+    return render_template("index.html", result=result, name=name, chart_data=chart_data)
 
 if __name__ == "__main__":
     app.run(debug=True)
