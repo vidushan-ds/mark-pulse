@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Email
+from models import db, Student, Exam, Marks, Prediction
+
 
 class LoginForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
@@ -12,6 +14,13 @@ class LoginForm(FlaskForm):
 app = Flask(__name__)
 
 app.config["SECRET_KEY"] = "vidushan-ds"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///ol_predictor.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db.init_app(app)
+
+with app.app_context():
+    db.create_all()
 
 def grade_calculator(marks: list):
     
@@ -40,8 +49,14 @@ def login():
     form = LoginForm()
     
     if form.validate_on_submit():
-        session["name"] = form.name.data
-        return redirect(url_for("home"))
+        student = Student.query.filter_by(email=form.email.data).first()
+        
+        if student and student.check_password(form.password.data):
+            session["student_id"] = student.id
+            session["name"] = student.name
+            return redirect(url_for("home"))
+        else:
+            form.email.errors.append("Invalid email or password")
     
     return render_template("login.html", form=form)
 
@@ -49,6 +64,7 @@ def login():
 def home():
     result = None
     
+    student_id = session.get("student_id")
     name = session.get("name")
     
     if request.method == 'POST':
@@ -65,6 +81,26 @@ def home():
         
         marks = [science, mathematics, sinhala, english, history, religion, category_1, category_2, category_3]
         grades = grade_calculator(marks)
+        
+        exam = Exam(student_id=student_id, exam_name=exam_name)
+        db.session.add(exam)
+        db.session.commit()
+        
+        subject_names = ["science", 
+                        "mathematics",
+                        "sinhala",
+                        "english",
+                        "history", 
+                        "religion", 
+                        "category_1", 
+                        "category_2", 
+                        "category_3"]
+        
+        for subject, score in zip(subject_names, marks):
+            if score is not None:
+                db.session.add(Marks(exam_id=exam.id, subject=subject, score=score))
+                
+        db.session.commit()
         
         result = {
             "exam_name" : exam_name,
