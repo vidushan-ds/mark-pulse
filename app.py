@@ -1,10 +1,17 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField
-from wtforms.validators import DataRequired, Email
+from wtforms.validators import DataRequired, Email, EqualTo, Length
 from models import db, Student, Exam, Marks, Prediction
 
-
+class SignupForm(FlaskForm):
+    name = StringField("Name", validators=[DataRequired()])
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    password = PasswordField("Password", validators=[DataRequired(), Length(min=6)])
+    confirm_password = PasswordField("Confirm Password", validators=[DataRequired(), EqualTo("password", message="Passwords must match")])
+    submit = SubmitField("Sign Up")
+    
+    
 class LoginForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired(), Email()])
@@ -59,6 +66,26 @@ def login():
             form.email.errors.append("Invalid email or password")
     
     return render_template("login.html", form=form)
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    form = SignupForm()
+    
+    if form.validate_on_submit():
+        existing = Student.query.filter_by(email=form.email.data).first()
+        if existing:
+            form.email.errors.append("An account with this email already exists")
+        else:
+            student = Student(name=form.name.data, email=form.email.data)
+            student.set_password(form.password.data)
+            db.session.add(student)
+            db.session.commit()
+            
+            session["student_id"] = student.id
+            session["name"] = student.name
+            return redirect(url_for("home"))
+    
+    return render_template("signup.html", form=form)
 
 @app.route("/home", methods=['GET', 'POST'])
 def home():

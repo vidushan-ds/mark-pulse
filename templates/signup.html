@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <title>Sign Up</title>
+</head>
+<body>
+
+   <div class="wrapper">
+    <h1>SIGN UP</h1>
+    <form method="POST">
+
+        {{ form.hidden_tag()}}
+
+        <p>
+            {{ form.name.label }}
+            {{ form.name(placeholder="Username") }}
+
+            {% if form.name.errors %}
+            <ul class="errors">
+                {% for error in form.name.errors %}
+                <li class="error">{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </p>
+
+        <p>
+            {{ form.email.label }}
+            {{ form.email(placeholder="Email")}}
+
+            {% if form.email.errors %}
+            <ul class="errors">
+                {% for error in form.email.errors %}
+                <li class="error">{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </p>
+
+        <p>
+            {{ form.password.label }}
+            {{ form.password(placeholder="Password")}}
+
+            {% if form.password.errors %}
+            <ul class="errors">
+                {% for error in form.password.errors %}
+                <li class="error">{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </p>
+
+        <p>
+            {{ form.confirm_password.label }}
+            {{ form.confirm_password(placeholder="Confirm Password")}}
+
+            {% if form.confirm_password.errors %}
+            <ul class="errors">
+                {% for error in form.confirm_password.errors %}
+                <li class="error">{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </p>
+
+        <p>
+            {{ form.submit()}}
+        </p>
+
+    </form>
+    <p style="text-align: center; margin-top: 12px; font-size: 13px;">
+        Already have an account? <a href="{{ url_for('login') }}">Log in</a>
+    </p>
+   </div>
+</body>
+</html>
