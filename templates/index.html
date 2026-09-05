@@ -91,6 +91,22 @@
 
     {% endif %}
 
+    {% if card_data %}
+    <div class="insight-section">
+        <div class="insight-card insight-best">
+            <div class="insight-label">🏆 Best Subject</div>
+            <div class="insight-subject">{{ card_data.best_subject }}</div>
+            <div class="insight-score">{{ card_data.best_score }}</div>
+        </div>
+
+        <div class="insight-card insight-weak">
+            <div class="insight-label">⚠️ Needs Improvement</div>
+            <div class="insight-subject">{{ card_data.weakest_subject }}</div>
+            <div class="insight-score">{{ card_data.weakest_score }}</div>
+        </div>
+    </div>
+    {% endif %}
+
     {% if chart_data.line_labels %}
     <div class="charts-section">
         <div class="chart-card">

@@ -91,6 +91,7 @@ def signup():
 @app.route("/home", methods=['GET', 'POST'])
 def home():
     result = None
+    card_data = None
     
     student_id = session.get("student_id")
     name = session.get("name")
@@ -190,6 +191,17 @@ def home():
         )
         radar_data.append(round(avg_score, 1) if avg_score is not None else 0)
         
+    if any(score > 0 for score in radar_data):
+        best_index = radar_data.index(max(radar_data))
+        weakest_index = radar_data.index(min(radar_data))
+        
+        card_data = {
+            "best_subject" : subject_names[best_index],
+            "best_score" : radar_data[best_index],
+            "weakest_subject" : subject_names[weakest_index],
+            "weakest_score" : radar_data[weakest_index]
+        }
+        
     chart_data = {
         "line_labels" : line_labels,
         "line_data" : line_data,
@@ -197,7 +209,7 @@ def home():
         "radar_data" : radar_data
     }
     
-    return render_template("index.html", result=result, name=name, chart_data=chart_data)
+    return render_template("index.html", result=result, card_data=card_data, name=name, chart_data=chart_data)
 
 if __name__ == "__main__":
     app.run(debug=True)

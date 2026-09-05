@@ -151,6 +151,53 @@ h1 {
     grid-column: 1 / -1; 
 }
 
+.insight-section {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 1200px;
+    margin: 24px auto 0;
+}
+
+.insight-card {
+    flex: 1 1 300px;
+    border-radius: 12px;
+    padding: 24px 28px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    color: #fff;
+    text-align: center;
+}
+
+.insight-best {
+    background: linear-gradient(135deg, #2e7d32, #43a047);
+}
+
+.insight-weak {
+    background: linear-gradient(135deg, #c62828, #e53935);
+}
+
+.insight-label {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    opacity: 0.9;
+    margin-bottom: 8px;
+}
+
+.insight-subject {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.insight-score {
+    font-size: 15px;
+    opacity: 0.85;
+}
+
 .charts-section {
     display: flex;
     justify-content: center;
