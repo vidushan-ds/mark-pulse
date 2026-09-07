@@ -218,6 +218,11 @@ def home():
                            card_data=card_data, 
                            name=name, 
                            chart_data=chart_data)
+    
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
 
 if __name__ == "__main__":
     app.run(debug=True)
