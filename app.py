@@ -94,6 +94,10 @@ def home():
     card_data = None
     
     student_id = session.get("student_id")
+    
+    if student_id is None:
+        return redirect(url_for("login"))
+    
     name = session.get("name")
     
     subject_names = ["science", 
@@ -209,7 +213,11 @@ def home():
         "radar_data" : radar_data
     }
     
-    return render_template("index.html", result=result, card_data=card_data, name=name, chart_data=chart_data)
+    return render_template("index.html", 
+                           result=result, 
+                           card_data=card_data, 
+                           name=name, 
+                           chart_data=chart_data)
 
 if __name__ == "__main__":
     app.run(debug=True)
