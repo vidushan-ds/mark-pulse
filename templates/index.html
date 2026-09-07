@@ -3,93 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
-    <title>Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>GradePulse</title>
 </head>
 <body>
 
-    <h1>Welcome {{ name }}!👋</h1>
-    <div class="form">
-    <form method="POST">
-        
-        <p>
-        <label for="exam_name">Name of Exam:</label>
-        <input type="text" id='exam_name' name="exam_name"><br>
-        </p>
+    <nav class="navbar">
 
-        <p>
-        <label for="science">Science: </label>
-        <input type="number" id="science" name="science" placeholder="0" min="0" max="100" required><br>
-        </p> 
+        <a href="{{ url_for('home') }}" class="brand">
+            <span>GradePulse</span>
+        </a>
 
-        <p>
-        <label for="math">Mathematics: </label>
-        <input type="number" id="math" name="math" placeholder="0" min="0" max="100" required><br>
-        </p>
+        <div class="nav-links">
 
-        <p>
-        <label for="sinhala">Sinhala: </label>
-        <input type="number" id="sinhala" name="sinhala" placeholder="0" min="0" max="100"required><br>
-        </p>
+            <a href="{{ url_for('home') }}" class="nav-link active">Dashboard</a>
+            <a href="#" class="nav-link">Exam</a>
+            <a href="#charts-section" class="nav-link">Analytics</a>
 
-        <p>
-        <label for="english">English: </label>
-        <input type="number" id="english" name="english" placeholder="0" min="0" max="100" required><br>
-        </p>
-
-        <p>
-        <label for="history">History: </label>
-        <input type="number" id="history" name="history" placeholder="0" min="0" max="100" required><br>
-        </p>
-
-        <p>
-        <label for="religion">Religion: </label>
-        <input type="number" id="religion" name="religion" placeholder="0" min="0" max="100" required><br>
-        </p>
-
-        <p>
-        <label for="category_1">Category 1: </label>
-        <input type="number" id="category_1" name="category_1" placeholder="0" min="0" max="100" required><br>
-        </p>
-
-        <p>
-        <label for="category_2">Category 2: </label>
-        <input type="number" id="category_2" name="category_2" placeholder="0" min="0" max="100" required><br>
-        </p>
-
-        <p>
-        <label for="category_3">Category 3: </label>
-        <input type="number" id="category_3" name="category_3" placeholder="0" min="0" max="100" required><br>
-        </p>
-
-        <button type="submit">Submit</button>
-    </form>
-    </div>
-
-    {% if result %}
-    <div class="show-marks">
-        <h4> Results for {{ result.exam_name }}</h4>
-        <hr>
-        <p><strong>Science: </strong> {{ result['science'] }}</p>
-        <p><strong>Mathematics: </strong> {{ result['mathematics'] }}</p>
-        <p><strong>Sinhala: </strong> {{ result['sinhala'] }}</p>
-        <p><strong>English: </strong> {{ result['english'] }}</p>
-        <p><strong>History: </strong> {{ result['history'] }}</p>
-        <p><strong>Religion: </strong> {{ result['religion'] }}</p>
-        <p><strong>Category-1: </strong> {{ result['category_1'] }}</p>
-        <p><strong>Category-2: </strong> {{ result['category_2'] }}</p>
-        <p><strong>Category-3: </strong> {{ result['category_3'] }}</p>
-
-        <div class="grade-summary">
-            <div class="grade grade-a"><span>{{ result['grades'][0] }}</span>A</div>
-            <div class="grade grade-b"><span>{{ result['grades'][1] }}</span>B</div>
-            <div class="grade grade-c"><span>{{ result['grades'][2] }}</span>C</div>
-            <div class="grade grade-s"><span>{{ result['grades'][3] }}</span>S</div>
-            <div class="grade grade-w"><span>{{ result['grades'][4] }}</span>W</div>
         </div>
+
+        <div class="nav-user">
+
+            <span class="username"> 👤 {{ name }}</span>
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </div>
+
+    </nav>
+
+    <h1>Welcome {{ name }}!👋</h1>
+
+    <div class="dashboard-top">
+        <div class="form">
+            <form method="POST">
+                
+                <p>
+                <label for="exam_name">Name of Exam:</label>
+                <input type="text" id='exam_name' name="exam_name"><br>
+                </p>
+
+                <p>
+                <label for="science">Science: </label>
+                <input type="number" id="science" name="science" placeholder="0" min="0" max="100" required><br>
+                </p> 
+
+                <p>
+                <label for="math">Mathematics: </label>
+                <input type="number" id="math" name="math" placeholder="0" min="0" max="100" required><br>
+                </p>
+
+                <p>
+                <label for="sinhala">Sinhala: </label>
+                <input type="number" id="sinhala" name="sinhala" placeholder="0" min="0" max="100"required><br>
+                </p>
+
+                <p>
+                <label for="english">English: </label>
+                <input type="number" id="english" name="english" placeholder="0" min="0" max="100" required><br>
+                </p>
+
+                <p>
+                <label for="history">History: </label>
+                <input type="number" id="history" name="history" placeholder="0" min="0" max="100" required><br>
+                </p>
+
+                <p>
+                <label for="religion">Religion: </label>
+                <input type="number" id="religion" name="religion" placeholder="0" min="0" max="100" required><br>
+                </p>
+
+                <p>
+                <label for="category_1">Category 1: </label>
+                <input type="number" id="category_1" name="category_1" placeholder="0" min="0" max="100" required><br>
+                </p>
+
+                <p>
+                <label for="category_2">Category 2: </label>
+                <input type="number" id="category_2" name="category_2" placeholder="0" min="0" max="100" required><br>
+                </p>
+
+                <p>
+                <label for="category_3">Category 3: </label>
+                <input type="number" id="category_3" name="category_3" placeholder="0" min="0" max="100" required><br>
+                </p>
+
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        {% if result %}
+        <div class="show-marks">
+            <h4> Results for {{ result.exam_name }}</h4>
+            <hr>
+            <p><strong>Science: </strong> {{ result['science'] }}</p>
+            <p><strong>Mathematics: </strong> {{ result['mathematics'] }}</p>
+            <p><strong>Sinhala: </strong> {{ result['sinhala'] }}</p>
+            <p><strong>English: </strong> {{ result['english'] }}</p>
+            <p><strong>History: </strong> {{ result['history'] }}</p>
+            <p><strong>Religion: </strong> {{ result['religion'] }}</p>
+            <p><strong>Category-1: </strong> {{ result['category_1'] }}</p>
+            <p><strong>Category-2: </strong> {{ result['category_2'] }}</p>
+            <p><strong>Category-3: </strong> {{ result['category_3'] }}</p>
+
+            <div class="grade-summary">
+                <div class="grade grade-a"><span>{{ result['grades'][0] }}</span>A</div>
+                <div class="grade grade-b"><span>{{ result['grades'][1] }}</span>B</div>
+                <div class="grade grade-c"><span>{{ result['grades'][2] }}</span>C</div>
+                <div class="grade grade-s"><span>{{ result['grades'][3] }}</span>S</div>
+                <div class="grade grade-w"><span>{{ result['grades'][4] }}</span>W</div>
+            </div>
+        </div>
+        {% endif %}
     </div>
 
-    {% endif %}
 
     {% if card_data %}
     <div class="insight-section">
@@ -108,7 +133,7 @@
     {% endif %}
 
     {% if chart_data.line_labels %}
-    <div class="charts-section">
+    <div class="charts-section" id="charts-section">
         <div class="chart-card">
             <canvas id="lineChart"></canvas>
         </div>
