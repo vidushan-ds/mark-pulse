@@ -195,6 +195,29 @@ def home():
         )
         radar_data.append(round(avg_score, 1) if avg_score is not None else 0)
         
+    improvement_data = {}
+    
+    if len(recent_exams) >= 2:
+        previous_exam = recent_exams[-2]
+        latest_exam = recent_exams[-1]
+        
+        previous_marks = {mark.subject: mark.score for mark in previous_exam.marks}
+        latest_marks = {mark.subject: mark.score for mark in latest_exam.marks}
+        
+        for subject in subject_names:
+            
+            previous_score = previous_marks.get(subject)
+            latest_score = latest_marks.get(subject)
+            
+            if previous_score is not None and latest_score is not None:
+                improvement = latest_score - previous_score
+                
+                improvement_data[subject] = {
+                    "previous" : previous_score,
+                    "latest" : latest_score,
+                    "improvement" : improvement
+                }
+        
     if any(score > 0 for score in radar_data):
         best_index = radar_data.index(max(radar_data))
         weakest_index = radar_data.index(min(radar_data))
@@ -217,7 +240,8 @@ def home():
                            result=result, 
                            card_data=card_data, 
                            name=name, 
-                           chart_data=chart_data)
+                           chart_data=chart_data,
+                           improvement_data=improvement_data)
     
 @app.route("/logout")
 def logout():

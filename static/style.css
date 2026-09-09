@@ -372,3 +372,79 @@ h1 {
         margin-left: auto;
     }
 }
+
+.improvement-section {
+    width: 100%;
+    max-width: 1200px;
+    margin: 24px auto 0;
+}
+
+.improvement-title {
+    margin-bottom: 12px;
+    color: #1a1a1a;
+    font-size: 18px;
+}
+
+.improvement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.improvement-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-left: 5px solid #d5d9e0;
+}
+
+.improvement-subject {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.improvement-scores {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 6px;
+}
+
+.improvement-arrow {
+    color: #9ca3af;
+    font-size: 16px;
+}
+
+.improvement-delta {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.improvement-up {
+    border-left-color: #2e7d32;
+}
+.improvement-up .improvement-delta {
+    color: #2e7d32;
+}
+
+.improvement-down {
+    border-left-color: #e53935;
+}
+.improvement-down .improvement-delta {
+    color: #e53935;
+}
+
+.improvement-flat {
+    border-left-color: #9ca3af;
+}
+.improvement-flat .improvement-delta {
+    color: #6b7280;
+}
