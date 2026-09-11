@@ -4,6 +4,7 @@ from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 from models import db, Student, Exam, Marks, Prediction
 from sqlalchemy import func
+import os
 
 class SignupForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
@@ -21,7 +22,7 @@ class LoginForm(FlaskForm):
 
 app = Flask(__name__)
 
-app.config["SECRET_KEY"] = "vidushan-ds"
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-fallback-key")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///ol_predictor.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -249,4 +250,4 @@ def logout():
     return redirect(url_for("login"))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
