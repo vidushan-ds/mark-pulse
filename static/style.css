@@ -233,9 +233,22 @@ h1 {
     flex: 1 1 480px;
     height: 480px;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .chart-card canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.chart-canvas-wrapper {
+    flex: 1 1 auto;
+    position: relative;
+    min-height: 0;
+}
+
+.chart-canvas-wrapper canvas {
     width: 100% !important;
     height: 100% !important;
 }
@@ -447,4 +460,42 @@ h1 {
 }
 .improvement-flat .improvement-delta {
     color: #6b7280;
+}
+
+.subject-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.filter-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #f4f6f8;
+    border: 1px solid #d5d9e0;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #444;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+
+.filter-chip:hover {
+    background: #eaedf1;
+}
+
+.filter-chip input[type="checkbox"] {
+    margin: 0;
+    cursor: pointer;
+}
+
+.filter-all {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+    font-weight: 700;
 }

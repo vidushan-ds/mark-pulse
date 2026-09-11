@@ -159,7 +159,21 @@
     {% if chart_data.line_labels %}
     <div class="charts-section" id="charts-section">
         <div class="chart-card">
-            <canvas id="lineChart"></canvas>
+            <div class="subject-filter">
+                <label class="filter-chip filter-all">
+                    <input type="checkbox" id="showAllSubjects" checked>
+                    Show All
+                </label>
+                {% for subject in chart_data.radar_labels %}
+                <label class="filter-chip">
+                    <input type="checkbox" class="subject-checkbox" value="{{ subject }}" checked>
+                    {{ subject.replace('_', ' ').title() }}
+                </label>
+                {% endfor %}
+            </div>
+            <div class="chart-canvas-wrapper">
+                <canvas id="lineChart"></canvas>
+            </div>
         </div>
         <div class="chart-card">
             <canvas id="radarChart"></canvas>
