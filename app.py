@@ -53,7 +53,7 @@ def grade_calculator(marks: list):
     
     return [A_count, B_count, C_count, S_count, W_count]
 
-app.route("/")
+@app.route("/")
 def index():
     if session.get("student_id"):
         return redirect(url_for("home"))
