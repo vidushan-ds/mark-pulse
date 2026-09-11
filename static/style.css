@@ -283,7 +283,9 @@ h1 {
 }
 
 .brand-icon {
-    font-size: 24px;
+    height: 28px;
+    width: 28px;
+    object-fit: contain;
 }
 
 .nav-links {
