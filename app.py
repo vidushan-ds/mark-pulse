@@ -4,6 +4,8 @@ from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 from models import db, Student, Exam, Marks, Prediction
 from sqlalchemy import func
+from predict import predict_subject
+from datetime import datetime
 import os
 
 class SignupForm(FlaskForm):
@@ -224,7 +226,45 @@ def home():
                     "latest" : latest_score,
                     "improvement" : improvement
                 }
-        
+                
+    all_exams = (
+        Exam.query
+        .filter_by(student_id=student_id)
+        .order_by(Exam.id.asc())
+        .all()
+    )
+    
+    prediction_data = {}
+    
+    if len(all_exams) >= 2:
+        for subject in subject_names:
+            scores = []
+            for exam in all_exams:
+                mark = next((m.score for m in exam.marks if m.subject == subject), None)
+                if mark is not None:
+                    scores.append(mark)
+                    
+            if len(scores) >= 2:
+                predicted_score = predict_subject(scores)
+                prediction_data[subject] = predicted_score
+                
+                existing_prediction = Prediction.query.filter_by(
+                    student_id=student_id,
+                    subject=subject
+                ).first()
+                
+                if existing_prediction:
+                    existing_prediction.predicted_score = predicted_score
+                    existing_prediction.created_at = datetime.utcnow()
+                else:
+                    db.session.add(Prediction(
+                        student_id=student_id,
+                        subject=subject,
+                        predicted_score=predicted_score
+                    ))
+    
+    db.session.commit()
+            
     if any(score > 0 for score in radar_data):
         best_index = radar_data.index(max(radar_data))
         weakest_index = radar_data.index(min(radar_data))
@@ -248,7 +288,8 @@ def home():
                            card_data=card_data, 
                            name=name, 
                            chart_data=chart_data,
-                           improvement_data=improvement_data)
+                           improvement_data=improvement_data,
+                           prediction_data=prediction_data)
     
 @app.route("/logout")
 def logout():

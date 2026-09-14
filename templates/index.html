@@ -21,6 +21,7 @@
 
             <a href="{{ url_for('home') }}" class="nav-link active">Dashboard</a>
             <a href="#" class="nav-link">Exam</a>
+            <a href="#prediction-section" class="nav-link">O/L Prediction</a>
             <a href="#insight-section" class="nav-link">Performance</a>
             <a href="#charts-section" class="nav-link">Analytics</a>
 
@@ -133,6 +134,30 @@
             <div class="insight-subject">{{ card_data.weakest_subject }}</div>
             <div class="insight-score">{{ card_data.weakest_score }}</div>
         </div>
+    </div>
+    {% endif %}
+
+    {% if prediction_data %}
+    <div class="prediction-section" id="prediction-section">
+        <div class="prediction-header">
+            <h4>🎯 Predicted O/L Performance</h4>
+            <p class="prediction-disclaimer">
+                Based on your own exam trend so far — not a guarantee, just an informed estimate.
+            </p>
+        </div>
+
+        <div class="prediction-grid">
+            {% for subject, score in prediction_data.items() %}
+            <div class="prediction-card">
+                <div class="prediction-subject">{{ subject.replace('_', ' ').title() }}</div>
+                <div class="prediction-score">{{ score }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% elif result %}
+    <div class="prediction-section prediction-empty">
+        <p>📊 Submit at least 2 exams to unlock O/L predictions for each subject.</p>
     </div>
     {% endif %}
 

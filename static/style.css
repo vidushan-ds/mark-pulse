@@ -501,3 +501,78 @@ h1 {
     border-color: #c7d2fe;
     font-weight: 700;
 }
+
+.prediction-section {
+    width: 100%;
+    max-width: 1200px;
+    margin: 24px auto 0;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 28px 32px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.prediction-header h4 {
+    color: #1a1a1a;
+    margin-bottom: 4px;
+}
+
+.prediction-disclaimer {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 20px;
+}
+
+.prediction-average {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #4f6ef7, #3d59d9);
+    color: #fff;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+}
+
+.prediction-average-label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.prediction-average-score {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.prediction-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.prediction-card {
+    background: #f4f6f8;
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-align: center;
+}
+
+.prediction-subject {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+
+.prediction-score {
+    font-size: 22px;
+    font-weight: 700;
+    color: #4f6ef7;
+}
+
+.prediction-empty {
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+}

@@ -1,5 +1,4 @@
 import numpy as np
-from datetime import datetime
 
 def predict_subject(scores):
     if not scores:
