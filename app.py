@@ -173,6 +173,23 @@ def home():
             "grades" : grades
         }
         
+    all_student_exam = (
+            Exam.query
+            .filter_by(student_id=student_id)
+            .order_by(Exam.id.asc())
+            .all()
+        )
+    
+    marks_table = []
+    
+    for exam in all_student_exam:
+        marks_by_subject = {m.subject: m.score for m in exam.marks}
+        row = {"exam_name" : exam.exam_name, 
+               "exam_date" : exam.exam_date}
+        for subject in subject_names:
+            row[subject] = marks_by_subject.get(subject)
+        marks_table.append(row)
+        
     recent_exams = (
         Exam.query
         .filter_by(student_id=student_id)
@@ -289,7 +306,8 @@ def home():
                            name=name, 
                            chart_data=chart_data,
                            improvement_data=improvement_data,
-                           prediction_data=prediction_data)
+                           prediction_data=prediction_data,
+                           marks_table=marks_table)
     
 @app.route("/logout")
 def logout():
