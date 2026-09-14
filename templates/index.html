@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='responsive.css') }}">    
     <title>GradePulse</title>
 </head>
+
+<!-- Home page -->
 <body>
 
     <nav class="navbar">
@@ -37,6 +39,7 @@
 
     <h1>Welcome {{ name }}!👋</h1>
 
+<!-- mark form -->
     <div class="dashboard-top">
         <div class="form">
             <form method="POST">
@@ -120,7 +123,7 @@
         {% endif %}
     </div>
 
-
+<!-- Insight section: show best subject and worst subject -->
     {% if card_data %}
     <div class="insight-section" id="insight-section">
         <div class="insight-card insight-best">
@@ -137,6 +140,7 @@
     </div>
     {% endif %}
 
+<!-- Show improvement data -->
     {% if improvement_data %}
     <div class="improvement-section">
         <h4 class="improvement-title">📈 Recent Performance</h4>
@@ -160,6 +164,7 @@
     </div>
     {% endif %}
 
+<!-- Show predicted O/L marks -->
     {% if prediction_data %}
     <div class="prediction-section" id="prediction-section">
         <div class="prediction-header">
@@ -184,6 +189,7 @@
     </div>
     {% endif %}
 
+<!-- line chart and radar chart -->
     {% if chart_data.line_labels %}
     <div class="charts-section" id="charts-section">
         <div class="chart-card">

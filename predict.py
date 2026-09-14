@@ -1,5 +1,6 @@
 import numpy as np
 
+# O/L marks predicting model
 def predict_subject(scores):
     if not scores:
         return None

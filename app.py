@@ -8,6 +8,7 @@ from predict import predict_subject
 from datetime import datetime
 import os
 
+# checking sign up data
 class SignupForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired(), Email()])
@@ -15,7 +16,7 @@ class SignupForm(FlaskForm):
     confirm_password = PasswordField("Confirm Password", validators=[DataRequired(), EqualTo("password", message="Passwords must match")])
     submit = SubmitField("Sign Up")
     
-    
+# check login data   
 class LoginForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired(), Email()])
@@ -33,6 +34,7 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
+# calculate grade for the marks
 def grade_calculator(marks: list):
     
     A_count = 0
@@ -55,12 +57,14 @@ def grade_calculator(marks: list):
     
     return [A_count, B_count, C_count, S_count, W_count]
 
+# root route
 @app.route("/")
 def index():
     if session.get("student_id"):
         return redirect(url_for("home"))
     return redirect(url_for("login"))
 
+# login page
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
@@ -77,6 +81,7 @@ def login():
     
     return render_template("login.html", form=form)
 
+# sign-up page
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     form = SignupForm()
@@ -97,6 +102,7 @@ def signup():
     
     return render_template("signup.html", form=form)
 
+# home page
 @app.route("/home", methods=['GET', 'POST'])
 def home():
     result = None
@@ -119,6 +125,7 @@ def home():
                     "category_2", 
                     "category_3"]
     
+    # getting marks from the user
     if request.method == 'POST':
         
         exam_name = request.form.get('exam_name', '')
@@ -172,7 +179,8 @@ def home():
             "category_3" : category_3,
             "grades" : grades
         }
-        
+    
+    # get all the exam result of the specific students    
     all_student_exam = (
             Exam.query
             .filter_by(student_id=student_id)
@@ -189,7 +197,8 @@ def home():
         for subject in subject_names:
             row[subject] = marks_by_subject.get(subject)
         marks_table.append(row)
-        
+    
+    # get the last 5 exam result
     recent_exams = (
         Exam.query
         .filter_by(student_id=student_id)
@@ -200,6 +209,7 @@ def home():
     
     recent_exams.reverse()
     
+    # create a line chart
     line_labels = [exam.exam_name for exam in recent_exams]
     line_data = {subject: [] for subject in subject_names}
     
@@ -207,7 +217,8 @@ def home():
         marks_by_subject = {m.subject: m.score for m in exam.marks}
         for subject in subject_names:
             line_data[subject].append(marks_by_subject.get(subject))
-            
+    
+    # create a radar chart        
     radar_data = []
     
     for subject in subject_names:
@@ -220,7 +231,8 @@ def home():
             .scalar()
         )
         radar_data.append(round(avg_score, 1) if avg_score is not None else 0)
-        
+    
+    # calculate how much improve better or worse than last exam    
     improvement_data = {}
     
     if len(recent_exams) >= 2:
@@ -251,6 +263,7 @@ def home():
         .all()
     )
     
+    # using predicting model predict the exam marks for the O/L exam
     prediction_data = {}
     
     if len(all_exams) >= 2:
@@ -281,7 +294,8 @@ def home():
                     ))
     
     db.session.commit()
-            
+    
+    # find the highest scoring subject and lowest scoring subject      
     if any(score > 0 for score in radar_data):
         best_index = radar_data.index(max(radar_data))
         weakest_index = radar_data.index(min(radar_data))
@@ -308,7 +322,8 @@ def home():
                            improvement_data=improvement_data,
                            prediction_data=prediction_data,
                            marks_table=marks_table)
-    
+
+# log out route   
 @app.route("/logout")
 def logout():
     session.clear()

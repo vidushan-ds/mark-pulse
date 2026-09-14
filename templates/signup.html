@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='responsive.css') }}">
     <title>Sign Up</title>
 </head>
+
+<!-- sign up page -->
 <body>
 
    <div class="wrapper">
@@ -31,7 +33,7 @@
 
         <p>
             {{ form.email.label }}
-            {{ form.email(placeholder="Email")}}
+            {{ form.email(placeholder="Email") }}
 
             {% if form.email.errors %}
             <ul class="errors">
@@ -44,7 +46,7 @@
 
         <p>
             {{ form.password.label }}
-            {{ form.password(placeholder="Password")}}
+            {{ form.password(placeholder="Password") }}
 
             {% if form.password.errors %}
             <ul class="errors">
@@ -57,7 +59,7 @@
 
         <p>
             {{ form.confirm_password.label }}
-            {{ form.confirm_password(placeholder="Confirm Password")}}
+            {{ form.confirm_password(placeholder="Confirm Password") }}
 
             {% if form.confirm_password.errors %}
             <ul class="errors">

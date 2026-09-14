@@ -23,6 +23,10 @@ body {
     box-sizing: border-box;
 }
 
+/* =========================================
+   MARK SUBMITTING FORM
+========================================= */
+
 .form {
     background: #ffffff;
     border-radius: 12px;
@@ -112,6 +116,10 @@ h1 {
     margin: 10px 0 16px;
 }
 
+/* =========================================
+   RESULT SHOWING SECTION
+========================================= */
+
 .show-marks p {
     display: flex;
     justify-content: space-between;
@@ -167,6 +175,10 @@ h1 {
     grid-column: 1 / -1; 
 }
 
+/* =========================================
+   INSIGHT SECTION
+========================================= */
+
 .insight-section {
     display: flex;
     justify-content: center;
@@ -213,6 +225,10 @@ h1 {
     font-size: 15px;
     opacity: 0.85;
 }
+
+/* =========================================
+   CHART SECTION
+========================================= */
 
 .charts-section {
     display: flex;
@@ -388,6 +404,10 @@ h1 {
     }
 }
 
+/* =========================================
+   IMPROVEMENT SECTION
+========================================= */
+
 .improvement-section {
     width: 100%;
     max-width: 1200px;
@@ -502,6 +522,10 @@ h1 {
     font-weight: 700;
 }
 
+/* =========================================
+   PREDICTING RESULT SHOW
+========================================= */
+
 .prediction-section {
     width: 100%;
     max-width: 1200px;
@@ -576,6 +600,10 @@ h1 {
     color: #6b7280;
     font-size: 14px;
 }
+
+/* =========================================
+   EXAM MARK TABLE
+========================================= */
 
 .marks-table-section {
     width: 100%;
