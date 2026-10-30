@@ -2,10 +2,17 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
-from models import db, Student, Exam, Marks, Prediction
-from sqlalchemy import func
-from predict import predict_subject
-from datetime import datetime
+from models import db, Student
+from services.grades import grade_calculator
+from services.exams import save_exam, get_exam_records
+from services.analytics import (
+    build_marks_table,
+    build_chart_data,
+    calculate_subject_averages,
+    calculate_improvement,
+    find_best_and_weakest,
+)
+from services.predictions import generate_predictions, save_predictions
 import os
 
 # checking sign up data
@@ -34,28 +41,28 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-# calculate grade for the marks
-def grade_calculator(marks: list):
-    
-    A_count = 0
-    B_count = 0
-    C_count = 0
-    S_count = 0
-    W_count = 0
-    
-    for mark in marks:
-        if mark >= 75:
-            A_count += 1
-        elif mark >= 65:
-            B_count += 1
-        elif mark >= 55:
-            C_count += 1
-        elif mark >= 35:
-            S_count += 1
-        else:
-            W_count += 1
-    
-    return [A_count, B_count, C_count, S_count, W_count]
+#--------------------------------
+FORM_FIELDS = {
+   "science": "science",
+    "mathematics": "math",
+    "sinhala": "sinhala",
+    "english": "english",
+    "history": "history",
+    "religion": "religion",
+    "category_1": "category_1",
+    "category_2": "category_2",
+    "category_3": "category_3" 
+}
+#--------------------------------
+
+def parse_exam_form(form):
+    exam_name = form.get("exam_name", "")
+    marks = {
+        subject: form.get(field, type=float)
+        for subject, field in FORM_FIELDS.items()
+    }
+    return exam_name, marks
+
 
 # root route
 @app.route("/")
@@ -103,225 +110,37 @@ def signup():
     return render_template("signup.html", form=form)
 
 # home page
-@app.route("/home", methods=['GET', 'POST'])
+@app.route("/home", methods=["GET", "POST"])
 def home():
-    result = None
-    card_data = None
-    
     student_id = session.get("student_id")
-    
     if student_id is None:
         return redirect(url_for("login"))
-    
-    name = session.get("name")
-    
-    subject_names = ["science", 
-                    "mathematics",
-                    "sinhala",
-                    "english",
-                    "history", 
-                    "religion", 
-                    "category_1", 
-                    "category_2", 
-                    "category_3"]
-    
-    # getting marks from the user
-    if request.method == 'POST':
-        
-        exam_name = request.form.get('exam_name', '')
-        
-        science = request.form.get('science', type=float)
-        mathematics = request.form.get('math', type=float)
-        sinhala = request.form.get('sinhala', type=float)
-        english = request.form.get('english', type=float)
-        history = request.form.get('history', type=float)
-        religion = request.form.get('religion', type=float)
-        category_1 = request.form.get('category_1', type=float)
-        category_2 = request.form.get('category_2', type=float)
-        category_3 = request.form.get('category_3', type=float)
-        
-        marks = [science,
-                mathematics,
-                sinhala,
-                english, 
-                history, 
-                religion, 
-                category_1, 
-                category_2, 
-                category_3]
-        
-        grades = grade_calculator(marks)
-        
-        exam = Exam(student_id=student_id, 
-                    exam_name=exam_name)
-        
-        db.session.add(exam)
-        db.session.commit()
-        
-        for subject, score in zip(subject_names, marks):
-            if score is not None:
-                db.session.add(Marks(exam_id=exam.id, 
-                                     subject=subject, 
-                                     score=score))
-                
-        db.session.commit()
-        
+
+    result = None
+    if request.method == "POST":
+        exam_name, marks = parse_exam_form(request.form)
+        save_exam(student_id, exam_name, marks)
         result = {
-            "exam_name" : exam_name,
-            "science" : science,
-            "mathematics" : mathematics,
-            "sinhala" : sinhala,
-            "english" : english,
-            "history" : history,
-            "religion" : religion,
-            "category_1" : category_1,
-            "category_2" : category_2,
-            "category_3" : category_3,
-            "grades" : grades
+            "exam_name": exam_name,
+            **marks,
+            "grades": grade_calculator(list(marks.values())),
         }
-    
-    # get all the exam result of the specific students    
-    all_student_exam = (
-            Exam.query
-            .filter_by(student_id=student_id)
-            .order_by(Exam.id.asc())
-            .all()
-        )
-    
-    marks_table = []
-    
-    for exam in all_student_exam:
-        marks_by_subject = {m.subject: m.score for m in exam.marks}
-        row = {"exam_name" : exam.exam_name, 
-               "exam_date" : exam.exam_date}
-        for subject in subject_names:
-            row[subject] = marks_by_subject.get(subject)
-        marks_table.append(row)
-    
-    # get the last 5 exam result
-    recent_exams = (
-        Exam.query
-        .filter_by(student_id=student_id)
-        .order_by(Exam.id.desc())
-        .limit(5)
-        .all()
+
+    records = get_exam_records(student_id)
+    averages = calculate_subject_averages(records)
+    prediction_data = generate_predictions(records)
+    save_predictions(student_id, prediction_data)
+
+    return render_template(
+        "index.html",
+        name=session.get("name"),
+        result=result,
+        card_data=find_best_and_weakest(averages),
+        chart_data=build_chart_data(records, averages),
+        improvement_data=calculate_improvement(records),
+        prediction_data=prediction_data,
+        marks_table=build_marks_table(records),
     )
-    
-    recent_exams.reverse()
-    
-    # create a line chart
-    line_labels = [exam.exam_name for exam in recent_exams]
-    line_data = {subject: [] for subject in subject_names}
-    
-    for exam in recent_exams:
-        marks_by_subject = {m.subject: m.score for m in exam.marks}
-        for subject in subject_names:
-            line_data[subject].append(marks_by_subject.get(subject))
-    
-    # create a radar chart        
-    radar_data = []
-    
-    for subject in subject_names:
-        avg_score = (
-            db.session.query(func.avg(Marks.score))
-            .join(Exam)
-            .filter(Exam.student_id == student_id,
-                       Marks.subject == subject
-                       )
-            .scalar()
-        )
-        radar_data.append(round(avg_score, 1) if avg_score is not None else 0)
-    
-    # calculate how much improve better or worse than last exam    
-    improvement_data = {}
-    
-    if len(recent_exams) >= 2:
-        previous_exam = recent_exams[-2]
-        latest_exam = recent_exams[-1]
-        
-        previous_marks = {mark.subject: mark.score for mark in previous_exam.marks}
-        latest_marks = {mark.subject: mark.score for mark in latest_exam.marks}
-        
-        for subject in subject_names:
-            
-            previous_score = previous_marks.get(subject)
-            latest_score = latest_marks.get(subject)
-            
-            if previous_score is not None and latest_score is not None:
-                improvement = latest_score - previous_score
-                
-                improvement_data[subject] = {
-                    "previous" : previous_score,
-                    "latest" : latest_score,
-                    "improvement" : improvement
-                }
-                
-    all_exams = (
-        Exam.query
-        .filter_by(student_id=student_id)
-        .order_by(Exam.id.asc())
-        .all()
-    )
-    
-    # using predicting model predict the exam marks for the O/L exam
-    prediction_data = {}
-    
-    if len(all_exams) >= 2:
-        for subject in subject_names:
-            scores = []
-            for exam in all_exams:
-                mark = next((m.score for m in exam.marks if m.subject == subject), None)
-                if mark is not None:
-                    scores.append(mark)
-                    
-            if len(scores) >= 2:
-                predicted_score = predict_subject(scores)
-                prediction_data[subject] = predicted_score
-                
-                existing_prediction = Prediction.query.filter_by(
-                    student_id=student_id,
-                    subject=subject
-                ).first()
-                
-                if existing_prediction:
-                    existing_prediction.predicted_score = predicted_score
-                    existing_prediction.created_at = datetime.utcnow()
-                else:
-                    db.session.add(Prediction(
-                        student_id=student_id,
-                        subject=subject,
-                        predicted_score=predicted_score
-                    ))
-    
-    db.session.commit()
-    
-    # find the highest scoring subject and lowest scoring subject      
-    if any(score > 0 for score in radar_data):
-        best_index = radar_data.index(max(radar_data))
-        weakest_index = radar_data.index(min(radar_data))
-        
-        card_data = {
-            "best_subject" : subject_names[best_index],
-            "best_score" : radar_data[best_index],
-            "weakest_subject" : subject_names[weakest_index],
-            "weakest_score" : radar_data[weakest_index]
-        }
-        
-    chart_data = {
-        "line_labels" : line_labels,
-        "line_data" : line_data,
-        "radar_labels" : subject_names,
-        "radar_data" : radar_data
-    }
-    
-    return render_template("index.html", 
-                           result=result, 
-                           card_data=card_data, 
-                           name=name, 
-                           chart_data=chart_data,
-                           improvement_data=improvement_data,
-                           prediction_data=prediction_data,
-                           marks_table=marks_table)
 
 # log out route   
 @app.route("/logout")
