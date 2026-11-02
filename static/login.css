@@ -88,3 +88,19 @@ body {
     color: #e53935;
     font-size: 12px;
 }
+
+.hint {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.notice {
+    background: #eef2ff;
+    color: #3d59d9;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    text-align: center;
+}

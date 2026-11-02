@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField
-from wtforms.validators import DataRequired, Email, EqualTo, Length
+from wtforms.validators import DataRequired, Email, EqualTo
 from models import db, Student
 from services.grades import grade_calculator
+from services.passwords import strong_password
 from services.exams import save_exam, get_exam_records
 from services.analytics import (
     build_marks_table,
@@ -19,7 +20,7 @@ import os
 class SignupForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired(), Email()])
-    password = PasswordField("Password", validators=[DataRequired(), Length(min=6)])
+    password = PasswordField("Password", validators=[DataRequired(), strong_password])
     confirm_password = PasswordField("Confirm Password", validators=[DataRequired(), EqualTo("password", message="Passwords must match")])
     submit = SubmitField("Sign Up")
     
