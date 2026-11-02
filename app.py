@@ -2,7 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Email, EqualTo
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
 from models import db, Student
+
 from services.grades import grade_calculator
 from services.passwords import strong_password
 from services.exams import save_exam, get_exam_records
@@ -34,7 +38,7 @@ class LoginForm(FlaskForm):
 app = Flask(__name__)
 
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-fallback-key")
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///ol_predictor.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///ol_predictor.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
@@ -64,6 +68,19 @@ def parse_exam_form(form):
     }
     return exam_name, marks
 
+#---------------------------------
+
+# find the who is the owner of the request form
+def client_ip():
+    return request.headers.get("X-Real-IP") or get_remote_address()
+
+limiter = Limiter(client_ip, app=app, default_limits=[], storage_uri="memory://")
+
+@app.errorhandler(429)
+def too_many_request(error):
+    return "Too many attempts. Please wait a minute and try again", 429
+
+#----------------------------------
 
 # root route
 @app.route("/")
@@ -74,6 +91,7 @@ def index():
 
 # login page
 @app.route("/login", methods=["GET", "POST"])
+@limiter.limit("10 per minute", methods=["POST"])
 def login():
     form = LoginForm()
     
@@ -91,6 +109,7 @@ def login():
 
 # sign-up page
 @app.route("/signup", methods=["GET", "POST"])
+@limiter.limit("10 per minute", methods=["POST"])
 def signup():
     form = SignupForm()
     
