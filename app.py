@@ -18,6 +18,7 @@ from services.analytics import (
     find_best_and_weakest,
 )
 from services.predictions import generate_predictions, save_predictions
+from services.password_reset import generate_reset_token, verify_reset_token, send_reset_email
 import os
 
 # checking sign up data
@@ -34,6 +35,16 @@ class LoginForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
     password = PasswordField("Password", validators=[DataRequired()])
     submit = SubmitField("Login")
+    
+# forgot password form
+class ForgotPasswordForm(FlaskForm):
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    submit = SubmitField("Send reset link")
+    
+# reset password form
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField("New Password", validators=[DataRequired(), strong_password])
+    confirm_password = PasswordField("Confirm New Password")
 
 app = Flask(__name__)
 
@@ -128,6 +139,46 @@ def signup():
             return redirect(url_for("home"))
     
     return render_template("signup.html", form=form)
+
+# forgot password page
+@app.route("/forgot-password", methods=["GET", "POST"])
+@limiter.limit("5 per hour", methods=["POST"])
+def forgot_password():
+    form = ForgotPasswordForm()
+    message = None
+
+    if form.validate_on_submit():
+        student = Student.query.filter_by(email=form.email.data).first()
+
+        if student:
+            token = generate_reset_token(student)
+            link = url_for("reset_password", token=token, _external=True)
+            send_reset_email(student.email, link)
+
+        message = "If that email is registered, a reset link has been sent."
+
+    return render_template("forgot_password.html", form=form, message=message)
+
+# reset password page
+@app.route("/reset-password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    student = verify_reset_token(token)
+
+    if student is None:
+        return render_template(
+            "forgot_password.html",
+            form=ForgotPasswordForm(),
+            message="That reset link is invalid or has expired. Please request a new one.",
+        ), 400
+
+    form = ResetPasswordForm()
+
+    if form.validate_on_submit():
+        student.set_password(form.password.data)
+        db.session.commit()
+        return redirect(url_for("login"))
+
+    return render_template("reset_password.html", form=form)
 
 # home page
 @app.route("/home", methods=["GET", "POST"])
