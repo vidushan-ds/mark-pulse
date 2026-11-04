@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_wtf import FlaskForm
+from flask_wtf.csrf import CSRFProtect, CSRFError
 from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Email, EqualTo
 from flask_limiter import Limiter
@@ -52,6 +53,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-fallback-key")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///ol_predictor.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
 db.init_app(app)
 
@@ -88,9 +90,16 @@ def client_ip():
 
 limiter = Limiter(client_ip, app=app, default_limits=[], storage_uri="memory://")
 
+# checks the CSRF token on every POST/PUT/PATCH/DELETE before the view runs
+csrf = CSRFProtect(app)
+
 @app.errorhandler(429)
 def too_many_request(error):
     return "Too many attempts. Please wait a minute and try again", 429
+
+@app.errorhandler(CSRFError)
+def csrf_failed(error):
+    return "Your form expired or was invalid. Please go back, refresh the page and try again.", 400
 
 #----------------------------------
 
