@@ -45,6 +45,7 @@ class ForgotPasswordForm(FlaskForm):
 class ResetPasswordForm(FlaskForm):
     password = PasswordField("New Password", validators=[DataRequired(), strong_password])
     confirm_password = PasswordField("Confirm New Password")
+    submit = SubmitField("Reset Password")
 
 app = Flask(__name__)
 
@@ -110,6 +111,7 @@ def login():
         student = Student.query.filter_by(email=form.email.data).first()
         
         if student and student.check_password(form.password.data):
+            session.clear()
             session["student_id"] = student.id
             session["name"] = student.name
             return redirect(url_for("home"))
