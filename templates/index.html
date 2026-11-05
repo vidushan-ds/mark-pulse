@@ -43,6 +43,7 @@
     <div class="dashboard-top">
         <div class="form">
             <form method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 
                 <p>
                 <label for="exam_name">Name of Exam:</label>
@@ -248,8 +249,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        const result = {{ result | tojson }};
-        const chartData = {{ chart_data | tojson }};
+        const result = JSON.parse('{{ result | tojson }}');
+        const chartData = JSON.parse('{{ chart_data | tojson }}');
     </script>
     <script src="{{ url_for('static', filename='js/chart.js')}}"></script>
 
