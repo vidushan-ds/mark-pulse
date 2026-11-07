@@ -1,5 +1,5 @@
 import sqlite3
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import CheckConstraint, UniqueConstraint, event
@@ -9,6 +9,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from services import SUBJECT_NAMES
 
 db = SQLAlchemy()
+
+
+def utc_now():
+    return datetime.now(timezone.utc)
 
 SUBJECT_LIST_SQL = ", ".join(f"'{subject}'" for subject in SUBJECT_NAMES)
 
