@@ -3,6 +3,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Email, EqualTo
+from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
@@ -49,6 +50,11 @@ class ResetPasswordForm(FlaskForm):
 
 app = Flask(__name__)
 
+app.wsgi_app = ProxyFix(
+    app.wsgi_app,
+    x_for=1
+)
+
 # --------- SECRET_KEY ------------
 
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
@@ -91,11 +97,10 @@ def parse_exam_form(form):
 
 #---------------------------------
 
-# find the who is the owner of the request form
-def client_ip():
-    return request.headers.get("X-Real-IP") or get_remote_address()
-
-limiter = Limiter(client_ip, app=app, default_limits=[], storage_uri="memory://")
+limiter = Limiter(get_remote_address,
+                  app=app,
+                  default_limits=[],
+                  storage_uri=os.environ.get("RATELIMIT_STORAGE_URI", "memory://"))
 
 # checks the CSRF token on every POST/PUT/PATCH/DELETE before the view runs
 csrf = CSRFProtect(app)
