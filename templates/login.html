@@ -19,19 +19,6 @@
         {{ form.hidden_tag() }}
 
         <p>
-            {{ form.name.label }}
-            {{ form.name(placeholder="Username") }}
-
-            {% if form.name.errors %}
-            <ul class="errors">
-                {% for error in form.name.errors %}
-                <li class="error">{{ error }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-        </p>
-
-        <p>
             {{ form.email.label }}
             {{ form.email(placeholder="Email") }}
 
