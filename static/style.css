@@ -352,6 +352,8 @@ h1 {
     font-size: 14px;
     font-weight: 600;
     transition: 0.2s ease;
+    cursor: pointer;
+    font: inherit;
 }
 
 .logout-btn:hover {
