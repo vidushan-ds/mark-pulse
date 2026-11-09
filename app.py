@@ -45,7 +45,7 @@ class ForgotPasswordForm(FlaskForm):
 # reset password form
 class ResetPasswordForm(FlaskForm):
     password = PasswordField("New Password", validators=[DataRequired(), strong_password])
-    confirm_password = PasswordField("Confirm New Password")
+    confirm_password = PasswordField("Confirm New Password", validators=[DataRequired(), EqualTo("password", message="Passwords must match")])
     submit = SubmitField("Reset Password")
 
 app = Flask(__name__)
