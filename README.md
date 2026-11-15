@@ -2,6 +2,8 @@
 
 GradePulse is a Flask web app built for students preparing for the O/L exam in Sri Lanka. Students log their term/model exam marks over time, and the app tracks trends, highlights strengths and weaknesses, and gives a statistically estimated O/L performance based on their own exam history.
 
+🌐 **Live demo:** https://vidushan.pythonanywhere.com
+
 ---
 
 ## ✨ Features
