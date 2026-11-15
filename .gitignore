@@ -1,2 +1,23 @@
+# secrets
 .env
 .env.local
+
+# local database and its backups
+instance/
+*.db
+*.sqlite
+*.backup-*
+
+# virtual environments
+env/
+venv/
+
+# Python and tool caches
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# editor and OS files
+.vscode/
+.DS_Store
+Thumbs.db
