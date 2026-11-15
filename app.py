@@ -21,6 +21,8 @@ from services.analytics import (
 )
 from services.predictions import generate_predictions, save_predictions
 from services.password_reset import generate_reset_token, verify_reset_token, send_reset_email
+
+from dotenv import load_dotenv
 import os
 
 # checking sign up data
@@ -57,6 +59,7 @@ app.wsgi_app = ProxyFix(
 
 # --------- SECRET_KEY ------------
 
+load_dotenv()
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
 if not app.config["SECRET_KEY"]:
