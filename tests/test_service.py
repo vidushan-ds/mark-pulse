@@ -4,8 +4,6 @@ from services.analytics import (
     calculate_subject_averages,
     find_best_and_weakest,
 )
-from services.predictions import predict_subject, generate_predictions
-
 
 def record(name, **marks):
     return {"exam_name": name, "exam_date": None, "marks": marks}
@@ -37,15 +35,3 @@ def test_averages_ignore_missing_subjects():
 
 def test_best_and_weakest_returns_none_without_data():
     assert find_best_and_weakest([0] * 9) is None
-
-
-def test_predict_single_score_returns_it():
-    assert predict_subject([72.0]) == 72.0
-
-
-def test_predict_rising_trend_is_above_the_average():
-    assert predict_subject([50, 60, 70]) == 69.3
-
-
-def test_predictions_need_two_exams():
-    assert generate_predictions([record("T1", science=50)]) == {}

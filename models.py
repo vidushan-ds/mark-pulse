@@ -37,7 +37,7 @@ class Student(db.Model):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    created_at = db.Column(db.DateTime, default=utc_now, nullable=False)
 
     exams = db.relationship("Exam", backref="student", cascade="all, delete-orphan")
     predictions = db.relationship("Prediction", backref="student", cascade="all, delete-orphan")
@@ -108,7 +108,7 @@ class Prediction(db.Model):
     )
     subject = db.Column(db.String(50), nullable=False)
     predicted_score = db.Column(db.Float, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    created_at = db.Column(db.DateTime, default=utc_now, nullable=False)
 
     def __repr__(self):
         return f"<Prediction {self.subject}={self.predicted_score}>"

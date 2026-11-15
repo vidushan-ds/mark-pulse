@@ -85,7 +85,7 @@ def test_signup_rejects_password_missing_character_types(client):
 
 def test_login_succeeds_with_correct_password(client):
     signup(client)
-    client.get("/logout")
+    client.post("/logout")
 
     response = login(client)
 
@@ -96,7 +96,7 @@ def test_login_succeeds_with_correct_password(client):
 
 def test_login_fails_with_wrong_password(client):
     signup(client)
-    client.get("/logout")
+    client.post("/logout")
 
     response = login(client, password="Wr0ng!Password")
 
@@ -118,12 +118,19 @@ def test_logout_clears_session(client):
     signup(client)
     assert is_logged_in(client)
 
-    response = client.get("/logout")
+    response = client.post("/logout")
 
     assert response.status_code == 302
     assert response.headers["Location"].endswith("/login")
     assert not is_logged_in(client)
 
+def test_logout_link_alone_cannot_log_you_out(client):
+    signup(client)
+    
+    response = client.get("/logout")
+    
+    assert response.status_code == 405
+    assert is_logged_in(client)
 
 def test_home_redirects_to_login_when_logged_out(client):
     response = client.get("/home")
@@ -153,10 +160,10 @@ def test_rate_limit_is_per_visitor_ip(client):
     limiter.reset()
     try:
         for _ in range(10):
-            login(client, password="Wr0ng!Password", headers={"X-Real-IP": "1.1.1.1"})
+            login(client, password="Wr0ng!Password", headers={"X-Forwarded-For": "2.2.2.2"})
 
-        blocked = login(client, password="Wr0ng!Password", headers={"X-Real-IP": "1.1.1.1"})
-        other_visitor = login(client, password="Wr0ng!Password", headers={"X-Real-IP": "2.2.2.2"})
+        blocked = login(client, password="Wr0ng!Password", headers={"X-Forwarded-For": "2.2.2.2"})
+        other_visitor = login(client, password="Wr0ng!Password", headers={"X-Forwarded-For": "1.1.1.1"})
 
         assert blocked.status_code == 429
         assert other_visitor.status_code == 200
