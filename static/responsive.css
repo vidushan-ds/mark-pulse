@@ -100,3 +100,109 @@
         font-size: 20px;
     }
 }
+
+/* =========================================
+   PHONES: NAVBAR AND CHARTS
+========================================= */
+
+/* The logout control is a <button>: remove the browser's default 3D border */
+button.logout-btn {
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* navbar.js measures positions inside this row to keep the active link in view */
+.nav-links {
+    position: relative;
+}
+
+/* Small colour dot on each subject chip: shows which line is which subject */
+.filter-chip:not(.filter-all)::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--dot, transparent);
+}
+
+@media (max-width: 800px) {
+
+    .navbar {
+        height: auto;
+        flex-wrap: wrap;
+        padding: 8px 14px 4px;
+        gap: 4px 8px;
+    }
+
+    .brand {
+        font-size: 18px;
+    }
+
+    .brand-icon {
+        height: 24px;
+        width: 24px;
+    }
+
+    .nav-user {
+        margin-left: auto;
+        gap: 8px;
+    }
+
+    .logout-btn {
+        padding: 7px 12px;
+        font-size: 13px;
+    }
+
+    /* the five links become ONE row that scrolls sideways */
+    .nav-links {
+        order: 3;
+        width: 100%;
+        flex-wrap: nowrap;
+        justify-content: flex-start;   /* not "center": centred overflow can't be scrolled back to the left */
+        overflow-x: auto;
+        gap: 4px;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+    }
+
+    .nav-links::-webkit-scrollbar {
+        display: none;
+    }
+
+    .nav-link {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        padding: 7px 12px;
+        font-size: 13.5px;
+    }
+}
+
+@media (max-width: 900px) {
+
+    /* line chart card: the chips take their own height, the chart gets a fixed, roomy one */
+    .chart-card {
+        height: auto;
+    }
+
+    .chart-canvas-wrapper {
+        flex: 0 0 auto;
+        height: 340px;
+    }
+
+    .subject-filter {
+        gap: 6px;
+        margin-bottom: 10px;
+    }
+
+    .filter-chip {
+        padding: 4px 10px;
+        font-size: 12px;
+        gap: 5px;
+    }
+
+    /* radar chart card (the last card) */
+    .charts-section .chart-card:last-child {
+        height: 400px;
+    }
+}

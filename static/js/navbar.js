@@ -21,10 +21,22 @@
     if (items.length === 0) return;
 
     var offset = 0;
+    var activeLink = null;
 
     function measure() {
         offset = navbar.offsetHeight + 24;
         document.documentElement.style.setProperty("--nav-offset", offset + "px");
+    }
+
+    function centerActiveLink(link) {
+        var row = link.parentElement;
+        if (row.scrollWidth <= row.clientWidth + 2) return; 
+        var left = link.offsetLeft - (row.clientWidth - link.offsetWidth) / 2;
+        if (row.scrollTo) {
+            row.scrollTo({ left: left, behavior: "smooth" });
+        } else {
+            row.scrollLeft = left;
+        }
     }
 
     function update() {
@@ -45,6 +57,11 @@
         links.forEach(function (link) {
             link.classList.toggle("active", link === current.link);
         });
+
+        if (current.link !== activeLink) {
+            activeLink = current.link;
+            centerActiveLink(activeLink);
+        }
     }
 
     var waiting = false;

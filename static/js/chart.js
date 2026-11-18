@@ -25,10 +25,20 @@ if (chartData && chartData.line_labels && chartData.line_labels.length > 0) {
         data: chartData.line_data[subject],
         borderColor: colors[i % colors.length],
         backgroundColor: colors[i % colors.length],
+        borderWidth: isSmallScreen ? 2 : 3,
+        pointRadius: isSmallScreen ? 2.5 : 3,
+        pointHoverRadius: 6,
         fill: false,
         tension: 0.3,
         spanGaps: true
     }));
+
+    document.querySelectorAll(".subject-checkbox").forEach(function (checkbox) {
+        const dataset = lineDatasets.find(function (d) { return d.subjectKey === checkbox.value; });
+        if (dataset) {
+            checkbox.parentElement.style.setProperty("--dot", dataset.borderColor);
+        }
+    });
 
     lineChart = new Chart(document.getElementById("lineChart"), {
         type: 'line',
@@ -40,10 +50,13 @@ if (chartData && chartData.line_labels && chartData.line_labels.length > 0) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                title: { display: true, text: "Marks Trend — Last 5 Exams" },
+                title: { display: true, text: "Marks Trend — Last 5 Exams", font: { size: isSmallScreen ? 13 : 16} },
                 legend: { display: false }
             },
-            scales: { y: { min: 0, max: 100 } }
+            scales: {
+                x: { ticks: { font: { size: isSmallScreen ? 11 : 12 }, maxRotation: 0 } },
+                y: { min: 0, max: 100, ticks: { stepSize: 20, font: { size: isSmallScreen ? 11 : 12 } } }
+            }
         }
     });
 
@@ -63,8 +76,18 @@ if (chartData && chartData.line_labels && chartData.line_labels.length > 0) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { title: { display: true, text: "Overall Performance by Subject" } },
-            scales: { r: { min: 0, max: 100 } }
+            plugins: {
+                title: { display: true, text: "Overall Performance by Subject", font: { size: isSmallScreen ? 13 : 16 } },
+                legend: { display: !isSmallScreen }
+            },
+            scales: {
+                r: {
+                    min: 0,
+                    max: 100,
+                    ticks: { stepSize: 20, showLabelBackdrop: false, font: { size: 10 } },
+                    pointLabels: { font: { size: isSmallScreen ? 11 : 12 } }
+                }
+            }
         }
     });
 }
